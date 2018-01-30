@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.18;
 
 contract Counter {
 
@@ -6,18 +6,18 @@ contract Counter {
     int private count;
 
     /* Contract constructor */
-    function counter() {
+    function Counter() public {
         count = 0;
     }
 
     /* This function increases the value of the counter by 1 */
     function incrementCounter() public {
-    count += 1;
+        count += 1;
     }
 
     /* This function decreases the value of the counter by 1 */
     function decrementCounter() public {
-    count -= 1;
+        count -= 1;
     }
 
     /* This function returns the counter's value */

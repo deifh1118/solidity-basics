@@ -18,6 +18,7 @@ contract Mortal {
             selfdestruct(owner);
         }
     }
+
 }
 
 contract Greeter is Mortal {

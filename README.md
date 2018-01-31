@@ -1,23 +1,17 @@
 # solidity-basics
 
-Examples of smart contracts.
+Examples of solidity smart contracts.
 
-### Storage contract
+## Environment
 
-Storage contract with truffle.
+To install the environment we have to install the following tools:
 
-Simple contract that holds a value and can be accessed through accesor methods. 
+- Truffle is a framework used to compile, deploy and interact with smart contracts.
+- The geth tool could be used too for this purpose.
+- testrpc should also be installed to have a blockchain testnet
+to host the smart contracts.
 
-### Greeter contract
-
-Greeter contract with truffle.
-
-Contract to expose a "hello world" method that inherits from a Mortal contract,
-which can be killed only by its owner.
-
-### Counter contract
-
-Contract implementing a counter object.
+See more at the docs folder in this repository.
 
 ## License
 

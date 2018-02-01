@@ -44,6 +44,16 @@ This command would scaffold the following structure:
 - truffle.js / truffle-config.js: truffle configuration
 (i.e. network configuration for connecting with a blockchain like testrpc).
 
+For creating a smart contract we can use the following command:
+
+```bash
+> truffle create contract Greeter
+```
+
+This command will create a contract in the contracts folder.
+
+Note: The name of the contract must be CamelCased.
+
 For compiling a smart contract we use the following command:
 
 ```bash
@@ -52,6 +62,19 @@ For compiling a smart contract we use the following command:
 
 This will generate a new build folder (if it does not exist already)
 with the compiled contract in a json format.
+
+In order to deploy the contract in an Ethereum blockchain we need to create
+a migration under the migrations folder that accomplishes the task
+of deploying the contract. This command is as follows:
+
+```bash
+> truffle create migration deploy_greeter
+```
+
+When the command is executed a file in the migrations folder will be
+automatically created with the pattern:
+
+``` migrations/<timestamp>_migrationname.js ```
 
 For deploying a smart contract we use the following command:
 
@@ -62,6 +85,67 @@ For deploying a smart contract we use the following command:
 This command uploads the contract to a blockchain, so it could be interacted with
 using the ``` truffle console ``` command.
 The reset flag allows us to force to redeploy to a contract into a blockchain.
+
+### Testing a smart contract
+
+Truffle has built-in testing support. We can test a contract before deploying it
+to a real blockchain.
+
+To create a test for a contract the following command could be used:
+
+```bash
+> truffle create test Greeter
+```
+
+This command will create a test file in the tests folder.
+
+Note: The name of the contract must be CamelCased.
+
+A test example is described below:
+
+```javascript
+const HelloWorld = artifacts.require('HelloWorld')
+  
+contract('HelloWorld', function(accounts) {
+    
+  it('sets the first account as the contract creator', async function() {
+    // This give a truffle abstraction which allow us to interact with our contracts.
+    const contract = await HelloWorld.deployed()
+
+    // Once we have the "contract" we can make calls or transations and then assert.
+    // The following is making a call to get the creator.
+    const creator = await contract.getCreator()
+
+    assert.equal(creator, accounts[0], 'main account is the creator')
+  })
+  
+  it('has hello world as initial message ', async function() {
+    const contract = await HelloWorld.deployed()
+    const message = await contract.getMessage()
+
+    assert.equal(message, 'hello world', 'message is hello world')
+  })
+  
+  it('changes the message via setMessage', async function() {
+    const contract = await HelloWorld.deployed()
+
+    // Execute a transaction and change the state of the contract.
+    await contract.setMessage('hola mundo')
+
+    // Get the new state.
+    const message = await contract.getMessage()
+
+    assert.equal(message, 'hola mundo', 'message is hola mundo')
+  })
+})
+```
+
+When the test is set up, the following command could be used to fire up the tests:
+
+```bash
+> truffle test
+```
+
 
 ### Interacting with a smart contract
 
@@ -137,7 +221,7 @@ truffle(development)> Counter.deployed().then(instance => instance.incrementCoun
 truffle(development)> Counter.deployed().then(instance => instance.decrementCounter.sendTransaction())
 ```
 
-- Eliminar un contrato y liberar recursos:
+- Delete a contract and release resources:
 
 By default a contract has no owner but we can establish one, the one who
 issues its creation. In order to eliminate a contract in this case,
@@ -164,13 +248,98 @@ truffle(development)> web3.eth.getCode(Greeter.address)
 '0x0'
 ```
 
-- Obtener el owner de un contrato
+- Get a contract's owner:
 
 ```bash
 truffle(development)> i.owner.call()
 '0xe10c0b784b1a051f24bb93e36c1f4c851d4210b3'
 truffle(development)> i.contract.owner.call()
 '0xe10c0b784b1a051f24bb93e36c1f4c851d4210b3'
+```
+
+- Get a contract's instance:
+
+```bash
+truffle(development)> Greeter.deployed().then(instance => i = instance)
+...
+```
+
+- Obtain the balances of the accounts in a Token contract:
+
+```bash
+truffle(development)> BasicToken.deployed().then(instance => i = instance)
+...
+truffle(development)> web3.eth.accounts
+[ '0x1b81267c9a7cdf18fc31e9428d6c08a3b9b9fc19',
+  '0xe1d1702bd6508233c2338146f71d3180e42c1711',
+  '0xe916cfb7c53e825a82b9b468673c602a162fe7bc',
+  '0x0de543bd7da6a936c0a69014f093a64a1a497d0b',
+  '0xfb60821dff9b32dbe82d2357916a16a80dd62143',
+  '0xcfbc781e3bc38e3478b2ffcca44bfd70b1dfee94',
+  '0x556f87e0eaa07367e61526f97d3b702da62569ce',
+  '0x48c3dc5ceef1a2b3ef9c321bf5505d841ab7089e',
+  '0xbf572b183f7369999c3936bba6b145820c6ce942',
+  '0x9bded27966ef8da90a30beff797456bbdea72f92' ]
+truffle(development)> i.balances.call(web3.eth.accounts[0])
+BigNumber { s: 1, e: 3, c: [ 2000 ] }
+truffle(development)> i.balances.call(web3.eth.accounts[0]).toString()
+'[object Promise]'
+truffle(development)> i.balances.call(web3.eth.accounts[0]).then(result => r = result)
+BigNumber { s: 1, e: 3, c: [ 2000 ] }
+truffle(development)> r.toString()
+'2000'
+truffle(development)> i.balances.call(web3.eth.accounts[1])
+BigNumber { s: 1, e: 0, c: [ 0 ] }
+```
+
+- Transfer tokens between accounts:
+
+```bash
+truffle(development)> BasicToken.deployed().then(instance => i = instance)
+...
+truffle(development)> web3.eth.accounts
+[ '0x1b81267c9a7cdf18fc31e9428d6c08a3b9b9fc19',
+  '0xe1d1702bd6508233c2338146f71d3180e42c1711',
+  '0xe916cfb7c53e825a82b9b468673c602a162fe7bc',
+  '0x0de543bd7da6a936c0a69014f093a64a1a497d0b',
+  '0xfb60821dff9b32dbe82d2357916a16a80dd62143',
+  '0xcfbc781e3bc38e3478b2ffcca44bfd70b1dfee94',
+  '0x556f87e0eaa07367e61526f97d3b702da62569ce',
+  '0x48c3dc5ceef1a2b3ef9c321bf5505d841ab7089e',
+  '0xbf572b183f7369999c3936bba6b145820c6ce942',
+  '0x9bded27966ef8da90a30beff797456bbdea72f92' ]
+truffle(development)> i.balances.call(web3.eth.accounts[0])
+BigNumber { s: 1, e: 3, c: [ 2000 ] }
+truffle(development)> i.balances.call(web3.eth.accounts[1])
+BigNumber { s: 1, e: 0, c: [ 0 ] }
+  
+# Transfer to an address
+truffle(development)> i.transfer.sendTransaction(web3.eth.accounts[1], 10, {from: web3.eth.accounts[0]})
+'0xbc7ae7ad0434d39b6d43200c5c0c99f7a03e1d3a724a364e3ba8551230a4aa63'
+truffle(development)> i.balances.call(web3.eth.accounts[0])
+BigNumber { s: 1, e: 3, c: [ 1990 ] }
+truffle(development)> i.balances.call(web3.eth.accounts[1])
+BigNumber { s: 1, e: 1, c: [ 10 ] }
+  
+# Another transfer
+truffle(development)> i.transfer.sendTransaction(web3.eth.accounts[2], 2, {from: web3.eth.accounts[1]})
+'0x504b784af4f03958f38388b7384d2a78b78655320b1ca9920333b9197a29d83c'
+truffle(development)> i.balances.call(web3.eth.accounts[0])
+BigNumber { s: 1, e: 3, c: [ 1990 ] }
+truffle(development)> i.balances.call(web3.eth.accounts[1])
+BigNumber { s: 1, e: 0, c: [ 8 ] }
+truffle(development)> i.balances.call(web3.eth.accounts[2])
+BigNumber { s: 1, e: 0, c: [ 2 ] }
+  
+# Transfer to an address from another address
+truffle(development)> i.transferFrom.sendTransaction(web3.eth.accounts[1], web3.eth.accounts[2], 2)
+'0x4ddaef26bb08845ae7f56282ef4f0aaef2a55ca0c9b56ffabd13811f99e4893c'
+truffle(development)> i.balances.call(web3.eth.accounts[0])
+BigNumber { s: 1, e: 3, c: [ 1990 ] }
+truffle(development)> i.balances.call(web3.eth.accounts[1])
+BigNumber { s: 1, e: 0, c: [ 6 ] }
+truffle(development)> i.balances.call(web3.eth.accounts[2])
+BigNumber { s: 1, e: 0, c: [ 4 ] }
 ```
 
 ## License

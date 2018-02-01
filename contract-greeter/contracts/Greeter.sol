@@ -32,7 +32,7 @@ contract Greeter is Mortal {
     }
 
     /* Main function of the contract */
-    function greet() public constant returns (string) {
+    function greet() public view returns (string) {
         return greeting;
     }
 

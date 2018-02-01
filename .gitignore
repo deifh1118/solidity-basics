@@ -1,1 +1,8 @@
+# IDE
 .idea
+
+# Folders
+*node_modules
+
+# Irrelevant to git files
+*package-lock.json

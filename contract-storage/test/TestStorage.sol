@@ -8,7 +8,6 @@ contract TestStorage {
 
     function testInitialValueUsingDeployedContract() public {
         Storage storageContract = Storage(DeployedAddresses.Storage());
-
         uint storeDataExpected = 0;
 
         Assert.equal(storageContract.get(), storeDataExpected, "The data stored should be 0");
@@ -16,7 +15,6 @@ contract TestStorage {
 
     function testInitialValueUsingNewStorage() public {
         Storage storageContract = new Storage();
-
         uint storeDateExpected = 0;
 
         Assert.equal(storageContract.get(), storeDateExpected, "The data stored should be 0");
@@ -24,15 +22,15 @@ contract TestStorage {
 
     function testSetValue() public {
         Storage storageContract = new Storage();
-
         uint setValue = 10;
         uint expectedSetValue = setValue;
+        uint actualSetValue;
 
         // Call to set contract function
         storageContract.set(setValue);
 
         // Getting the value when set has been executed
-        uint actualSetValue = storageContract.get();
+        actualSetValue = storageContract.get();
 
         Assert.equal(actualSetValue, expectedSetValue, appendUintToString("The value set must be ", setValue));
     }

@@ -1,24 +1,27 @@
 const Mortal = artifacts.require("Mortal");
 
-contract('Mortal', function(accounts) {
+contract('Mortal', (accounts) => {
 
   let instance;
 
-  beforeEach('setup contract for each following test', async function () {
+  beforeEach('setup contract for each following test', async () => {
     instance = await Mortal.new();
   });
 
-  it("checks that the first account is the contract creator", async function () {
+  it("checks that the first account is the contract creator", async () => {
     const owner = await instance.owner();
+
     assert.equal(owner, accounts[0], "the owner is not the first account of the blockchain");
   });
 
-  it("should be killed correctly", async function () {
+  it("should be killed correctly", async () => {
     const bytecode_before = web3.eth.getCode(instance.address);
-    await instance.kill.sendTransaction({"from": accounts[0]});
+    let bytecodeAfter;
 
-    const bytecode = web3.eth.getCode(instance.address);
-    assert.notEqual(bytecode_before, bytecode, "the contract was not killed");
-    assert.equal(bytecode, "0x0", "the contract was not killed correctly");
+    await instance.kill.sendTransaction({"from": accounts[0]});
+    bytecodeAfter = web3.eth.getCode(instance.address);
+
+    assert.notEqual(bytecode_before, bytecodeAfter, "the contract was not killed");
+    assert.equal(bytecodeAfter, "0x0", "the contract was not killed correctly");
   });
 });

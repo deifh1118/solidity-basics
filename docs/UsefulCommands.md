@@ -19,13 +19,21 @@ to host the smart contracts.
 
 ### Startup of a test blockchain
 
-We can start a test blockchain using the testrpc tool like so:
+- We can start a test blockchain using the testrpc tool like so:
 
 ```bash
 testrpc
 ```
 
-This testnet has a number of accounts predefined to use to test smart contracts.
+- Another option that we could use to set up a test blockchain is embedded in Truffle,
+and it is to use the develop utility:
+
+```bash
+> truffle develop
+```
+
+Note: both these testnets have a number of accounts predefined to use
+to test smart contracts.
 
 ### Scaffolding, compiling and deploying a smart contract
 

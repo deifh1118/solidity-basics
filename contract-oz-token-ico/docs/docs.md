@@ -1,5 +1,9 @@
 # Notes
 
+## More information
+
+See more at [OpenZeppelin docs](https://github.com/OpenZeppelin/zeppelin-solidity)
+
 ## TODO
 
 Testing

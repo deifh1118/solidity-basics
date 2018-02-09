@@ -350,6 +350,27 @@ truffle(development)> i.balances.call(web3.eth.accounts[2])
 BigNumber { s: 1, e: 0, c: [ 4 ] }
 ```
 
+### Debugging a smart contract
+
+Because there is not a debugger for smart contracts a JavaScript function
+could be used to check a contract's state:
+
+```js
+async function logContractState (myContract) {
+ console.log("")
+ console.log("MyContract:")
+ console.log("--------------")
+ console.log(`BALANCE: ${getBalanceInEth(myContract.address)}`)
+ console.log(`startTime=${await myContract.startTime.call()}`)
+ console.log(`poolTime=${await myContract.poolTime.call()}`)
+ console.log(`threshold=${await myContract.threshold.call()}`)
+ console.log(`recipient=${await myContract.recipient.call()}`)
+ console.log(`currentTime()=${await myContract.currentTime.call()}`)
+ console.log(`isClosed()=${await myContract.isClosed.call()}`)
+ console.log("")
+}
+```
+
 ## License
 
 MIT license.
